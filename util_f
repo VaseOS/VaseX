@@ -26,10 +26,8 @@ Options:
 
 Examples:
 
-  ./main -i                  Build ISO
   ./main -k                  Launch Klartix installer
   ./main -q help             Show VM quick commands
-  ./main -w /dev/sdd         Build ISO, sign, and flash to USB
 
 EOF
 }

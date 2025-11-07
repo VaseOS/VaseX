@@ -247,7 +247,7 @@ if im_groot; then
 
             if ! file_ex "./${zl_d}/${vm_d}/${iso_n}.${iso_ext}"; then
                 info "Looking for ./${zl_d}/${vm_d}/${iso_n}.${iso_ext}"
-                warn "ISO: $iso_n Not found in dir ${vm_d}. Build using -i or change ... config. Or get an ISO"
+                warn "ISO: $iso_n Not found in dir ${vm_d}. Change ... config. Or get an ISO"
             else
                 info "Found $iso_n in proper location."
             fi
