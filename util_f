@@ -324,8 +324,6 @@ cbanner() {
     echo
 }
 check_updates() {
-    local repo_url="https://github.com/h8d13/Vase"
-
     preop "Checking for updates..."
 
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
@@ -340,7 +338,8 @@ check_updates() {
     fi
 
     preop "Fetching from GitHub..."
-    if ! GIT_TERMINAL_PROMPT=0 git fetch https://github.com/h8d13/Vase.git master --quiet 2>/dev/null; then
+    preop $repo_url
+    if ! GIT_TERMINAL_PROMPT=0 git fetch $repo_url master --quiet 2>/dev/null; then
         warn "Failed to fetch updates. Check network connection."
         warn "Alternatively, run: git fetch origin master"
         return 1

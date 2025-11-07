@@ -1,6 +1,7 @@
 #... strucs
 # This file is an absolute mess but everything is declared here
 EDITOR="${EDITOR:-vim}"
+repo_url="https://github.com/h8d13/VaseX"
 
 ################## ISO CREATION
 vase_v="0.0.16" # For motd / github page
