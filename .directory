@@ -1,7 +1,11 @@
 [Desktop Entry]
 Icon=folder-log
-# th: 2a68074d0d3a10221921891dab595320
+# th: c101dd0aec2c916ee1edae6919971cef
 
+├── .github
+│   ├── hooks
+│   │   └── post-commit
+│   └── init-md5.sh
 ├── vase_os
 │   ├── grome_lum
 │   │   ├── lib
@@ -44,8 +48,7 @@ Icon=folder-log
 │   │   ├── a
 │   │   │   └── .directory
 │   │   ├── c
-│   │   │   ├── .directory
-│   │   │   └── myvm0.qcow2
+│   │   │   └── .directory
 │   │   ├── d
 │   │   │   └── .directory
 │   │   ├── iso_profiles
@@ -78,4 +81,4 @@ Icon=folder-log
 ├── upd_rm
 └── util_f
 
-15 directories, 61 files
+17 directories, 62 files
