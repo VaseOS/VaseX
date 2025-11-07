@@ -8,9 +8,10 @@ Using bash only.
 
 ## LINKS:
 
-- https://wiki.artixlinux.org/Main/InstallationUsingBuildiso
 - https://wiki.artixlinux.org/Main/InstallationWithFullDiskEncryption
 - https://github.com/paulphys/artix-fde
+- https://wiki.artixlinux.org/Main/InstallationUsingBuildiso
+- https://github.com/gripped/artix-bootstrap
 
 
 

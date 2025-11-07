@@ -464,7 +464,7 @@ chmod 000 /crypto_keyfile.bin
 
 # Add keyfile to LUKS (allows unlocking with either password OR keyfile)
 echo "Adding keyfile to LUKS container..."
-printf "%s" "$ROOT_PASSWORD" | cryptsetup luksAddKey "${TARGET_DISK}${PART_PREFIX}2" /crypto_keyfile.bin --key-file=- --keyfile-size=${#ROOT_PASSWORD}
+printf "%s" "$LUKS_PASSWORD" | cryptsetup luksAddKey "${TARGET_DISK}${PART_PREFIX}2" /crypto_keyfile.bin --key-file=- --keyfile-size=${#LUKS_PASSWORD}
 
 # Configure GRUB for LVM on LUKS with pbkdf2 and cryptkey
 sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=$LUKS_UUID:lvm-system root=/dev/lvmSystem/volRoot cryptkey=rootfs:/crypto_keyfile.bin zswap.enabled=0\"|" /etc/default/grub
