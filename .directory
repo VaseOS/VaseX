@@ -1,6 +1,6 @@
 [Desktop Entry]
 Icon=folder-log
-# th: c101dd0aec2c916ee1edae6919971cef
+# th: c99b82e0d2af9680fff5c744dbc1ea55
 
 ├── .github
 │   ├── hooks
@@ -57,14 +57,8 @@ Icon=folder-log
 │   │   │   └── plasma_skinny.conf
 │   │   ├── cli_art
 │   │   ├── .directory
-│   │   ├── flash_iso
-│   │   ├── gen_sig
-│   │   ├── host_uptodate
-│   │   ├── iso_mod
 │   │   ├── setup_vms
-│   │   ├── ver_sig
 │   │   └── vm_start
-│   ├── clean_cache
 │   ├── cli_art
 │   ├── .directory
 │   ├── env
@@ -81,4 +75,4 @@ Icon=folder-log
 ├── upd_rm
 └── util_f
 
-17 directories, 62 files
+17 directories, 56 files

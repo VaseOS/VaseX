@@ -13,6 +13,7 @@ Options:
 
   -b,  --branch BRANCH       Switch to git branch
 
+  -k,  --klartix             Launch Klartix Artix Linux installer
   -pe, --post-edit <type>    Edit post install script (plasma/gnome/xfce4, default: plasma)
   -p,  --post <type>         Run post install script (plasma/gnome/xfce4, default: plasma)
   -pm, --pkg-man             Launch pacman GUI
@@ -24,7 +25,6 @@ Options:
   -w,  --workflow <device>   Complete workflow: build, sign, flash
   -g,  --grub <args>         GRUB utilities (-h for grub help)
   -b,  --bench <type>        Run benchmarks: io, cpu, gpu
-  -k,  --klartix             Launch Klartix Artix Linux installer
   -r,  --reset               Reset logs and settings
 
 Examples:

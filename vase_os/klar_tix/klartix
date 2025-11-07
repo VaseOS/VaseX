@@ -11,7 +11,6 @@ if file_ex "${SCRIPT_DIR}/../../.vase.d/rcw"; then
     . "${SCRIPT_DIR}/../../.vase.d/rcw"
 fi
 # Source cfg file
-
 . "${SCRIPT_DIR}/klartix.conf"
 # Simplified installation with LVM on LUKS
 TOTAL_STEPS=28
@@ -462,7 +461,7 @@ echo "Generating cryptkey for single password prompt..."
 dd bs=512 count=4 if=/dev/random of=/crypto_keyfile.bin iflag=fullblock 2>/dev/null
 chmod 000 /crypto_keyfile.bin
 
-# Add keyfile to LUKS (allows unlocking with either password OR keyfile)
+# Add keyfile to LUKS
 echo "Adding keyfile to LUKS container..."
 printf "%s" "$LUKS_PASSWORD" | cryptsetup luksAddKey "${TARGET_DISK}${PART_PREFIX}2" /crypto_keyfile.bin --key-file=- --keyfile-size=${#LUKS_PASSWORD}
 
@@ -503,6 +502,9 @@ vm.swappiness = 100
 vm.watermark_boost_factor = 0
 vm.watermark_scale_factor = 125
 ZRAM_EOF
+
+git clone --recursive https://github.com/h8d13/VaseX /home/$TARGET_USER/VaseX
+chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/VaseX
 
 # Regenerate initramfs with LVM and encryption support
 echo "Regenerating initramfs with LVM on LUKS support..."

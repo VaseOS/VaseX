@@ -197,7 +197,7 @@ if exec_args "GRUB"; then
         "./${gl_d}/grome_lum" "$grub_flag" $grub_rest && exit
     fi
 fi
-if exec_args "BRANCH" || exec_args "BRANCH_TUI"; then
+if exec_args "BRANCH"; then
     branch_name="$(get_branch_name)"
 
     if [ -z "$branch_name" ]; then
@@ -240,7 +240,7 @@ fi
 if exec_args "PKG_MAN"; then
     preop "Launching PACTOPAC package manager..."
     gui_som "$SUDO_USER"
-    python3 "./${pp_d}/main.py" && ./${cc_py} && exit
+    python3 "./${pp_d}/main.py" && exit
 fi
 if exec_args "EXTRACT_LOGS"; then
     preop "Extracting installer logs..."

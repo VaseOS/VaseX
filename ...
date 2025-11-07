@@ -90,7 +90,6 @@ pp_d="$vase_d/pacto_pac"
 
 vase_p_env="$vase_d/env"
 vase_p_deps="$vase_d/mindeps"
-cc_py="$vase_d/clean_cache"
 
 #### Future alpine imp
 # Privilege escalation (ex: doas alternative)
