@@ -1,6 +1,6 @@
 [Desktop Entry]
 Icon=folder-log
-# th: c99b82e0d2af9680fff5c744dbc1ea55
+# th: 11e1c78ba3f5147554afa79af217d153
 
 ├── .github
 │   ├── hooks
@@ -44,6 +44,15 @@ Icon=folder-log
 │   │   ├── klartix_plasma
 │   │   └── klatrix_sound
 │   ├── pacto_pac
+│   │   ├── lib
+│   │   │   ├── stylepac.py
+│   │   │   ├── update-checker.sh
+│   │   │   └── update-checker-uninstall.sh
+│   │   ├── .directory
+│   │   ├── .gitignore
+│   │   ├── lazy.py
+│   │   ├── LICENSE
+│   │   └── main.py
 │   ├── zazu_lago
 │   │   ├── a
 │   │   │   └── .directory
@@ -73,6 +82,7 @@ Icon=folder-log
 ├── PKGBUILD
 ├── README.md
 ├── upd_rm
-└── util_f
+├── util_f
+└── z_notes.md
 
-17 directories, 56 files
+18 directories, 65 files

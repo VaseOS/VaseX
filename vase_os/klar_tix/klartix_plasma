@@ -7,6 +7,7 @@ source "${SCRIPT_DIR}/klartix.conf"
 
 ############## DESKTOP CFG
 #KLAGAN_MODE="-desktop" 
+
 # Uncomment saves 1gb by not downloading as many plasma stuff # but will need to install sddm-kcm
 # plasma contains flatpak for example while plasma-desktop doesn't. so discover will be useless
 

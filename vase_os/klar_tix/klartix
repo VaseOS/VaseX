@@ -40,20 +40,12 @@ show_progress() {
     # Print step description below
     info "$step_desc"
 }
-set -e  # Exit on error
-# Parse arguments
-VERBOSE=0
-for arg in "$@"; do
-    case $arg in
-        -v|--verbose)
-            VERBOSE=1
-            shift
-            ;;
-        *)
-            ;;
-    esac
-done
-# Vars
+#set -e  # Exit on error # Debug line
+# # Log file for debugging
+# LOG_FILE="./klartix_install_$(date +%Y%m%d_%H%M%S).log"
+# exec > >(tee -a "$LOG_FILE") 2>&1
+# echo "Installation log: $LOG_FILE"
+# Empty Vars
 TARGET_DISK="" # Will be prompted
 TARGET_USER="" # Will be prompted
 USER_PASSWORD="" # Will be prompted
@@ -80,6 +72,7 @@ info "Current block devices:"
 lsblk
 nlp
 # Prompt for target disk
+info "Example: /dev/sdx"
 read -p "Enter target disk: " TARGET_DISK
 if [ -z "$TARGET_DISK" ]; then
     die "Target disk cannot be empty."
@@ -102,6 +95,7 @@ else
 fi
 echo "  Swap:         zram"
 echo "  Encryption:   LVM on LUKS2 with pbkdf2"
+
 nlp
 warn "WARNING: This will ERASE ALL DATA on $TARGET_DISK!"
 nlp
@@ -115,9 +109,9 @@ cbanner "Klartix - Artix Linux Bootstrap Installer"
 nlp
 # Now prompt for passwords and user after disk confirmation
 read -sp "Enter password for root: " ROOT_PASSWORD
-echo ""
+nlp
 read -sp "Confirm root password: " ROOT_PASSWORD_CONFIRM
-echo ""
+nlp
 if [ "$ROOT_PASSWORD" != "$ROOT_PASSWORD_CONFIRM" ]; then
     die "Root passwords do not match."
 fi
@@ -129,10 +123,10 @@ read -p "Enter a username: " TARGET_USER
 if [ -z "$TARGET_USER" ]; then
     die "Username cannot be empty."
 fi
-read -sp "Enter password for $TARGET_USER: " USER_PASSWORD
-echo ""
-read -sp "Confirm user password: " USER_PASSWORD_CONFIRM
-echo ""
+read -sp "Enter password : " USER_PASSWORD
+nlp
+read -sp "Confirm password: " USER_PASSWORD_CONFIRM
+nlp
 if [ "$USER_PASSWORD" != "$USER_PASSWORD_CONFIRM" ]; then
     die "User passwords do not match."
 fi
@@ -141,9 +135,16 @@ if [ -z "$USER_PASSWORD" ]; then
 fi
 # Prompt for LUKS password
 nlp
-warn "IMPORTANT: GRUB uses US keyboard layout at boot!"
-warn "Your password will be typed with US layout even if you use '$KB_LAYOUT' now."
-warn "Avoid special characters that differ between layouts (e.g., shifted symbols)."
+if [ "$KB_LAYOUT" = "us" ]; then
+    info "LUKS password will be entered at boot using US keyboard layout."
+else
+    warn "IMPORTANT: GRUB keyboard layout configuration:"
+    warn "GRUB will be configured with '$KB_LAYOUT' layout for password entry."
+    warn "Note: GRUB only supports ASCII range (1-127), extended characters may not work."
+    info "For best results, use alphanumeric passwords without language specific."
+    warn "special symbols ie ù, è, à, ç, ñ."
+    info "Standard symbols are obviously fine and recommended, "
+fi
 nlp
 info "LUKS encryption password options:"
 echo "  1) Reuse root password"
@@ -161,14 +162,11 @@ case "$luks_choice" in
         info "Using user password for LUKS encryption"
         ;;
     3)
-        nlp
-        warn "Test your password: after entering, type it again to verify characters match."
-        nlp
         read -sp "Enter LUKS encryption password: " LUKS_PASSWORD
-        echo ""
-        read -sp "Confirm LUKS encryption password: " LUKS_PASSWORD_CONFIRM
-        echo ""
-        if [ "$LUKS_PASSWORD" != "$LUKS_PASSWORD_CONFIRM" ]; then
+        nlp
+                read -sp "Confirm LUKS encryption password: " LUKS_PASSWORD_CONFIRM
+        nlp
+                if [ "$LUKS_PASSWORD" != "$LUKS_PASSWORD_CONFIRM" ]; then
             die "LUKS passwords do not match."
         fi
         if [ -z "$LUKS_PASSWORD" ]; then
@@ -221,13 +219,13 @@ if grep -q "unable to inform the kernel" "$PARTED_OUTPUT"; then
     rm -f "$PARTED_OUTPUT"
     warn "Partitions are in use by the kernel!"
     warn "This usually happens after a failed installation attempt."
-    echo ""
-    info "Please do ONE of the following:"
+    nlp
+        info "Please do ONE of the following:"
     echo "  1. Unplug and replug the USB/disk"
     echo "  2. Reboot the system"
     echo "  3. Run: sudo partprobe $TARGET_DISK && sudo blockdev --rereadpt $TARGET_DISK"
-    echo ""
-    die "Cannot continue with stale partition table. Fix the issue above and try again."
+    nlp
+        die "Cannot continue with stale partition table. Fix the issue above and try again."
 fi
 rm -f "$PARTED_OUTPUT"
 # Force kernel to re-read partition table
@@ -347,9 +345,9 @@ show_progress "Setting bootstrap tool permissions..."
 chmod +x artix-bootstrap.sh
 show_progress "Bootstrapping Artix Linux with $INIT_SYSTEM..."
 if [ "$VERBOSE" = "1" ]; then
-    ./artix-bootstrap.sh -i "$INIT_SYSTEM" "$TARGET_MOUNT"
+    ./artix-bootstrap.sh -r "$MIRROR_URL" -i "$INIT_SYSTEM" "$TARGET_MOUNT"
 else
-    ./artix-bootstrap.sh -i "$INIT_SYSTEM" "$TARGET_MOUNT" > /dev/null 2>&1
+    ./artix-bootstrap.sh -r "$MIRROR_URL" -i "$INIT_SYSTEM" "$TARGET_MOUNT" > /dev/null 2>&1
 fi
 # At this point, artix-bootstrap should have set up the base system
 # Configure chroot mounts
@@ -383,11 +381,25 @@ fi
 show_progress "Creating chroot configuration script..."
 # Get LUKS partition UUID for LVM on LUKS
 LUKS_UUID=$(blkid -s UUID -o value "${TARGET_DISK}${PART_PREFIX}2")
+show_progress "Ckbcomp support..."
+# Copy ckbcomp for GRUB keymap generation if non-US layout
+if [ "$KB_LAYOUT" != "us" ]; then
+    info "Copying ckbcomp for GRUB keymap generation..."
+    mkdir -p "$TARGET_MOUNT/tmp/klartix_setup"
+    cp "${SCRIPT_DIR}/../grome_lum/lib/ckbcomp" "$TARGET_MOUNT/tmp/klartix_setup/"
+    chmod +x "$TARGET_MOUNT/tmp/klartix_setup/ckbcomp"
+fi
 
 cat > "$TARGET_MOUNT/configure.sh" << EOF
 #!/bin/bash
 # Klartix LVM on LUKS system configuration
 set -e
+
+# Pass configuration variables
+KB_LAYOUT="$KB_LAYOUT"
+KB_VARIANT="$KB_VARIANT"
+LOCK_ROOT="$LOCK_ROOT"
+
 # Initialize pacman keyring first
 echo "Initializing pacman keyring..."
 pacman-key --init
@@ -404,6 +416,22 @@ locale-gen
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 # Console keymap
 echo "KEYMAP=$KB_LAYOUT" > /etc/vconsole.conf
+
+# Enable keymaps service for init system
+case "$INIT_SYSTEM" in
+    openrc)
+        # Configure OpenRC keymaps service
+        echo "keymap=\"\$KB_LAYOUT\"" > /etc/conf.d/keymaps
+        rc-update add keymaps boot
+        ;;
+    runit)
+        # Runit loads from vconsole.conf automatically via agetty
+        ;;
+    s6|dinit)
+        # These typically load from vconsole.conf
+        ;;
+esac
+
 # Hostname
 echo "$TARGET_HOSTNAME" > /etc/hostname
 echo "127.0.0.1 localhost" > /etc/hosts
@@ -417,7 +445,9 @@ echo "root:$ROOT_PASSWORD" | chpasswd
 
 # Install essential packages for LVM on LUKS
 echo "Installing kernel, LVM, and base packages..."
-pacman -S --noconfirm $KERNEL linux-firmware grub efibootmgr base-devel sudo lvm2 cryptsetup git vim
+INSTALL_PKGS="$KERNEL linux-firmware grub efibootmgr mkinitcpio base-devel sudo lvm2 cryptsetup git vim xkeyboard-config"
+
+pacman -S --noconfirm \$INSTALL_PKGS
 
 # Create user
 useradd -m -s /bin/bash -G wheel $TARGET_USER
@@ -465,18 +495,24 @@ chmod 000 /crypto_keyfile.bin
 echo "Adding keyfile to LUKS container..."
 printf "%s" "$LUKS_PASSWORD" | cryptsetup luksAddKey "${TARGET_DISK}${PART_PREFIX}2" /crypto_keyfile.bin --key-file=- --keyfile-size=${#LUKS_PASSWORD}
 
-# Configure GRUB for LVM on LUKS with pbkdf2 and cryptkey
+# Standard configuration
 sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=$LUKS_UUID:lvm-system root=/dev/lvmSystem/volRoot cryptkey=rootfs:/crypto_keyfile.bin zswap.enabled=0\"|" /etc/default/grub
 
 # Add encrypt and lvm2 hooks to mkinitcpio
 sed -i 's/^HOOKS=.*/HOOKS=(base udev autodetect modconf block encrypt keyboard keymap consolefont lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
 
-# Embed keyfile into initramfs for automatic unlocking
+# Standard keyfile only
 sed -i 's/^FILES=.*/FILES=(\/crypto_keyfile.bin)/' /etc/mkinitcpio.conf
 
 # Enable GRUB cryptodisk support for pbkdf2 LUKS2
 echo "GRUB_ENABLE_CRYPTODISK=y" >> /etc/default/grub
-echo "GRUB_TERMINAL_INPUT=console" >> /etc/default/grub
+
+# Configure GRUB keyboard layout if not US
+if [ "$KB_LAYOUT" != "us" ]; then
+    echo "GRUB_TERMINAL_INPUT=at_keyboard" >> /etc/default/grub
+else
+    echo "GRUB_TERMINAL_INPUT=console" >> /etc/default/grub
+fi
 echo "GRUB_TERMINAL_OUTPUT=console" >> /etc/default/grub
 
 # Setup zram for swap (Artix Linux)
@@ -510,10 +546,61 @@ chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/VaseX
 echo "Regenerating initramfs with LVM on LUKS support..."
 mkinitcpio -P
 
-# Install and configure GRUB for /efi
-grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=Artix
-grub-install --target=x86_64-efi --efi-directory=/efi --removable
-grub-mkconfig -o /boot/grub/grub.cfg
+# Generate GRUB keymap if non-US layout (before grub-install)
+if [ "$KB_LAYOUT" != "us" ]; then
+    echo "Generating GRUB keymap for $KB_LAYOUT layout..."
+    mkdir -p /efi/grub/layouts
+
+    # Generate keymap using ckbcomp (supports ASCII 1-127 range for GRUB)
+    # Note: grub-mklayout will warn about extended characters (>127), which is expected
+    if [ -f /tmp/klartix_setup/ckbcomp ]; then
+        # Generate keymap with optional variant
+        if [ -n "\$KB_VARIANT" ]; then
+            echo "Generating GRUB keymap for \$KB_LAYOUT layout with variant: \$KB_VARIANT"
+            /tmp/klartix_setup/ckbcomp \$KB_LAYOUT \$KB_VARIANT 2>&1 | grub-mklayout -o /efi/grub/layouts/\$KB_LAYOUT.gkb 2>&1 | grep -v "unsupported keycode" || true
+        else
+            echo "Generating GRUB keymap for \$KB_LAYOUT layout (default variant)"
+            /tmp/klartix_setup/ckbcomp \$KB_LAYOUT 2>&1 | grub-mklayout -o /efi/grub/layouts/\$KB_LAYOUT.gkb 2>&1 | grep -v "unsupported keycode" || true
+        fi
+
+        # Check if keymap was generated successfully
+        if [ -f /efi/grub/layouts/\$KB_LAYOUT.gkb ] && [ -s /efi/grub/layouts/\$KB_LAYOUT.gkb ]; then
+            echo "Successfully generated GRUB keymap: \$KB_LAYOUT.gkb"
+        else
+            echo "ERROR: no valid keyboard layout found. Check the input."
+            echo "GRUB will use US layout for password entry."
+            rm -f /efi/grub/layouts/\$KB_LAYOUT.gkb
+        fi
+
+        # Clean up ckbcomp
+        rm -rf /tmp/klartix_setup
+    else
+        echo "ERROR: ckbcomp not found, cannot generate GRUB keymap"
+    fi
+fi
+
+# Install GRUB - use /efi as boot directory so grub.cfg is on unencrypted EFI partition
+
+grub-install --target=x86_64-efi --efi-directory=/efi --boot-directory=/efi --bootloader-id=Artix
+grub-install --target=x86_64-efi --efi-directory=/efi --boot-directory=/efi --removable
+
+# Generate grub.cfg on EFI partition (accessible before LUKS unlock)
+grub-mkconfig -o /efi/grub/grub.cfg
+
+# Add keymap loading to grub.cfg if non-US layout
+if [ "$KB_LAYOUT" != "us" ] && [ -f /efi/grub/layouts/$KB_LAYOUT.gkb ]; then
+    # Insert keymap commands at the beginning of grub.cfg (after initial setup)
+    # This ensures keymap is loaded before any LUKS password prompts
+    sed -i '/^### BEGIN \/etc\/grub.d\/00_header ###/a\\n# Load keyboard layout\\ninsmod keylayouts\\nkeymap /grub/layouts/'$KB_LAYOUT'.gkb' /efi/grub/grub.cfg
+    echo "Added keymap loading to /efi/grub/grub.cfg"
+fi
+
+# Lock root account if configured (last step in chroot)
+if [ "$LOCK_ROOT" = "1" ]; then
+    echo "Locking root account for security..."
+    passwd -l root
+    echo "Root account locked. Use sudo from $TARGET_USER for administrative tasks."
+fi
 EOF
 show_progress "Making configuration script executable..."
 chmod +x "$TARGET_MOUNT/configure.sh"
@@ -555,19 +642,6 @@ show_progress "Closing LVM and LUKS devices..."
 # Sync again before closing
 sync && sync && sync
 sleep 2
-
-# Deactivate LVM volume group first
-if ! vgchange -an lvmSystem 2>/dev/null; then
-    warn "Forcing LVM deactivation..."
-    dmsetup remove_all --force 2>/dev/null || true
-fi
-
-# Close LUKS container
-if ! cryptsetup close lvm-system 2>/dev/null; then
-    warn "Forcing LUKS closure..."
-    dmsetup remove --force lvm-system 2>/dev/null || true
-fi
-
 # Ensure all device mapper devices are gone
 sleep 2
 dmsetup remove_all --force 2>/dev/null || true
@@ -575,17 +649,7 @@ dmsetup remove_all --force 2>/dev/null || true
 show_progress "Final device cleanup..."
 sync && sync && sync
 sleep 2
-
-# Flush block device buffers
-blockdev --flushbufs "$TARGET_DISK" 2>/dev/null || true
-
-# Re-read partition table to clear any stale references
-partprobe "$TARGET_DISK" 2>/dev/null || true
-
-# Final sync
-sync
-sleep 1
-echo ""
+nlp
 reop "=== Klartix installation complete! ==="
 reop "You can now reboot into your new Artix Linux system."
 info "Init system: $INIT_SYSTEM"

@@ -2,16 +2,13 @@
 
 > Assumes x86_64 UEFI. 
 
-Setups LUKS2 (PKBF2) on LVM. 
+Setups FDE with GRUB2 LUKS2 (PKBF2) on LVM. 
+And keymap support using [ckbcomp](archlinux.org/packages/ckbcomp).
 
-Using bash only.
+Using bash only and the official [ArtixBootstrap Tool](https://gitea.artixlinux.org/artix/artix-bootstrap/)
 
 ## LINKS:
 
 - https://wiki.artixlinux.org/Main/InstallationWithFullDiskEncryption
 - https://github.com/paulphys/artix-fde
-- https://gitea.artixlinux.org/artix/artix-bootstrap/
-- https://wiki.artixlinux.org/Main/InstallationUsingBuildiso
-
-
 

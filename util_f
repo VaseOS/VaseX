@@ -14,6 +14,7 @@ Options:
   -b,  --branch dot-new      Switch to git branch
 
   -k,  --klartix             Launch Klartix Artix Linux installer
+  -kd, --kdesktop            Launch Klartix Plasma desktop installer
   -pe, --post-edit <type>    Edit post install script (plasma/gnome/xfce4, default: plasma)
   -p,  --post <type>         Run post install script (plasma/gnome/xfce4, default: plasma)
   -pm, --pkg-man             Launch pacman GUI
@@ -27,6 +28,7 @@ Options:
 Examples:
 
   ./main -k                  Launch Klartix installer
+  ./main -kd                 Launch Klartix Plasma desktop installer
   ./main -q help             Show VM quick commands
 
 EOF
@@ -110,6 +112,10 @@ parse_args() {
                 KLARTIX=1
                 shift
                 ;;
+            -kd|--kdesktop)
+                DESKTOP=1
+                shift
+                ;;   
             *)
                 echo "Unknown option: $1"
                 echo "Run './main -h' for help"
@@ -132,6 +138,7 @@ exec_args() {
         PKG_MAN) [ "${PKG_MAN}" = "1" ] ;;
         EDIT_CONF) [ "${EDIT_CONF}" = "1" ] ;;
         KLARTIX) [ "${KLARTIX}" = "1" ] ;;
+        DESKTOP) [ "${DESKTOP}" = "1" ] ;;
         *) return 1 ;;
     esac
 }
