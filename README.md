@@ -11,9 +11,8 @@ And keymap support using [ckbcomp](https://archlinux.org/packages/ckbcomp).
 Using bash only and the official [ArtixBootstrap Tool](https://gitea.artixlinux.org/artix/artix-bootstrap/)
 
 - Modify `vase_os/klar_tix_lvm/klartix.conf`
-- Install base sys: `vase_os/klar_tix_lvm/klartix_lvm`
-- Set up plasma: `vase_os/klar_tix_lvm/klartix_plasma`
-- Set up sound: `vase_os/klar_tix_lvm/klatrix_sound`
+- Install base sys: `sudo ./main -k`
+- Set up plasma: `sudo vase_os/klar_tix_lvm/klartix_plasma`
 
 ## LINKS:
 
