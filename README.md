@@ -22,8 +22,15 @@ Moreover all current input consumers are limited to ASCII.
 Using bash only and the official [ArtixBootstrap Tool](https://gitea.artixlinux.org/artix/artix-bootstrap/)
 
 - Modify `vase_os/klar_tix_lvm/klartix.conf`
-- Install base sys: `sudo ./main -k` *On the host*
-- Set up plasma & drivers: `sudo ./main -kpe`  *On the target*
+
+*On the host*
+
+To edit it directly: `sudo./main -ekc`
+- Install base sys: `sudo ./main -k` 
+
+*On the target*
+
+Set up plasma & drivers: `sudo ./main -kpe`  
 - Install: `sudo ./main -kde` *On the target*
 
 ## LINKS:

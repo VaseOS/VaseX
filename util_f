@@ -9,7 +9,8 @@ Usage: ./main [OPTIONS]
 Options:
   -h,  --help                Show this help message
   -u,  --update              Check git for updates & pull submodules
-  -ec, --edit-conf           Edit configuration file (...)
+  -ec,  --edit-conf          Edit configuration file (...)
+  -ekc, --edit-klartix-conf  Edit Klartix configuration file
 
   -b,  --branch dot-new      Switch to git branch
 
@@ -109,6 +110,10 @@ parse_args() {
                 EDIT_CONF=1
                 shift
                 ;;
+            -ekc|--edit-klartix-conf)
+                EDIT_KLARTIX_CONF=1
+                shift
+                ;;
             -k|--klartix)
                 KLARTIX=1
                 shift
@@ -142,6 +147,7 @@ exec_args() {
         POST_EDIT) [ "${POST_EDIT}" = "1" ] ;;
         PKG_MAN) [ "${PKG_MAN}" = "1" ] ;;
         EDIT_CONF) [ "${EDIT_CONF}" = "1" ] ;;
+        EDIT_KLARTIX_CONF) [ "${EDIT_KLARTIX_CONF}" = "1" ] ;;
         KLARTIX) [ "${KLARTIX}" = "1" ] ;;
         DESKTOP) [ "${DESKTOP}" = "1" ] ;;
         KDE_EDIT) [ "${KDE_EDIT}" = "1" ] ;;
