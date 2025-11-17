@@ -4,8 +4,8 @@
 
 Setups FDE with GRUB2 LUKS2 (PKBF2) on LVM. 
 
-And ANY keymap support using [ckbcomp](https://archlinux.org/packages/ckbcomp).
-Challenge came from the Grub [manual](https://www.gnu.org/software/grub/manual/grub/grub.html#Input-terminal) itself:
+And keymap support using [ckbcomp](https://aur.archlinux.org/packages/ckbcomp).
+Challenge came from the Grub2 [manual](https://www.gnu.org/software/grub/manual/grub/grub.html#Input-terminal) itself:
 
 ```
 Firmware console on BIOS, IEEE1275 and ARC doesn’t allow you to enter non-ASCII characters. 
