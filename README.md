@@ -8,10 +8,12 @@ And ANY keymap support using [ckbcomp](https://archlinux.org/packages/ckbcomp).
 Challenge came from the Grub [manual](https://www.gnu.org/software/grub/manual/grub/grub.html#Input-terminal) itself:
 
 ```
-Firmware console on BIOS, IEEE1275 and ARC doesn’t allow you to enter non-ASCII characters. EFI specification allows for such but author is unaware of any actual implementations. Serial input is currently limited for latin1 (unlikely to change). Own keyboard implementations (at_keyboard and usb_keyboard) supports any key but work on one-char-per-keystroke. So no dead keys or advanced input method. Also there is no keymap change hotkey. In practice it makes difficult to enter any text using non-Latin alphabet. Moreover all current input consumers are limited to ASCII. 
+Firmware console on BIOS, IEEE1275 and ARC doesn’t allow you to enter non-ASCII characters. 
+EFI specification allows for such but author is unaware of any actual implementations. 
+Serial input is currently limited for latin1 (unlikely to change). Own keyboard implementations (at_keyboard and usb_keyboard) supports any key but work on one-char-per-keystroke. 
+So no dead keys or advanced input method. Also there is no keymap change hotkey. In practice it makes difficult to enter any text using non-Latin alphabet. 
+Moreover all current input consumers are limited to ASCII. 
 ```
-
-
 
 > No ISO needed works from any existing Linux installation.
 
