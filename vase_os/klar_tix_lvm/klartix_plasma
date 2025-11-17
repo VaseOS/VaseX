@@ -103,7 +103,9 @@ echo "=== Installing kernel headers ==="
 ## Modern intel audio
 
 echo "=== Installing audio support ==="
-pacman -S --noconfirm --needed pipewire-alsa pipewire pipewire-pulse pipewire-jack wireplumber
+# Minimal working pipewire setup
+# Add pipewire-alsa if you need ALSA compatibility
+pacman -S --noconfirm --needed pipewire pipewire-pulse wireplumber
 
 echo "=== Setting up audio support ==="
 mkdir -p /etc/pipewire

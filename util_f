@@ -15,7 +15,8 @@ Options:
 
   -k,   --klartix            Launch Klartix Artix Linux installer
   -kd,  --kdesktop, -kde     Launch Klartix Plasma desktop installer
-  -pe, --post-edit <type>    Edit post install script (plasma/gnome/xfce4, default: plasma)
+  -kpe, --kde-edit           Edit Klartix Plasma installer script
+  -pe,  --post-edit <type>   Edit post install script (plasma/gnome/xfce4, default: plasma)
   -p,  --post <type>         Run post install script (plasma/gnome/xfce4, default: plasma)
   -pm, --pkg-man             Launch pacman GUI
 
@@ -116,6 +117,10 @@ parse_args() {
                 DESKTOP=1
                 shift
                 ;;
+            -kpe|--kde-edit)
+                KDE_EDIT=1
+                shift
+                ;;
             *)
                 echo "Unknown option: $1"
                 echo "Run './main -h' for help"
@@ -139,6 +144,7 @@ exec_args() {
         EDIT_CONF) [ "${EDIT_CONF}" = "1" ] ;;
         KLARTIX) [ "${KLARTIX}" = "1" ] ;;
         DESKTOP) [ "${DESKTOP}" = "1" ] ;;
+        KDE_EDIT) [ "${KDE_EDIT}" = "1" ] ;;
         *) return 1 ;;
     esac
 }

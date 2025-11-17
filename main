@@ -227,6 +227,10 @@ if im_groot; then
         preop "Launching Klartix Artix Linux installer..."
         "./${vase_d}/klar_tix_lvm/klartix_lvm" && exit
     fi
+    if exec_args "KDE_EDIT"; then
+        preop "Opening Klartix Plasma installer in $EDITOR..."
+        $EDITOR "./${vase_d}/klar_tix_lvm/klartix_plasma" && exit
+    fi
     if exec_args "DESKTOP"; then
         preop "Launching Klartix Plasma desktop installer..."
         "./${vase_d}/klar_tix_lvm/klartix_plasma" && exit
