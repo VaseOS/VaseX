@@ -12,10 +12,17 @@ if [ -f "$SCRIPT_DIR/../.vase.d/rcw" ]; then
 fi
 
 MISSING=()
-# Core packages (checks with pacman)
-PACKAGES="git archiso gnupg squashfs-tools jq tree"
+# Core packages required for Klartix installations
+# These are needed on the HOST system to run the Klartix installer
+PACKAGES="git archiso gnupg squashfs-tools jq tree wget parted lvm2 cryptsetup"
 
-preop "Checking BUILD packages..."
+# Filesystem tools (optional based on TARGET_FS in klartix.conf)
+# Add these if using non-ext4 filesystems:
+# - btrfs-progs (for btrfs)
+# - xfsprogs (for xfs)
+# - f2fs-tools (for f2fs)
+
+preop "Checking BUILD and INSTALL packages..."
 for pkg in $PACKAGES; do
     if ! to_devnull pacman -Qi "$pkg"; then
         postop "Missing: $pkg"
