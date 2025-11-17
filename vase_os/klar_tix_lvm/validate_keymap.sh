@@ -88,15 +88,17 @@ validate_x11_layout_json() {
 
 # Main validation function
 validate_keyboard_layout() {
-    local layout="$1"
-    local variant="$2"
-    local check_x11="${3:-true}"  # Default to checking X11
+    local console_keymap="$1"
+    local x11_layout="$2"
+    local x11_variant="$3"
+    local check_x11="${4:-true}"  # Default to checking X11
 
     echo "=================================="
     echo "Keyboard Layout Validation"
     echo "=================================="
-    echo "Layout:  $layout"
-    echo "Variant: ${variant:-<default>}"
+    echo "X11 Layout:      $x11_layout"
+    echo "X11 Variant:     ${x11_variant:-<default>}"
+    echo "Console Keymap:  $console_keymap"
     echo "=================================="
     echo ""
 
@@ -105,7 +107,7 @@ validate_keyboard_layout() {
 
     # Validate console keymap
     echo "Checking console keymap..."
-    if validate_console_keymap "$layout"; then
+    if validate_console_keymap "$console_keymap"; then
         console_valid=1
     fi
     echo ""
@@ -113,9 +115,7 @@ validate_keyboard_layout() {
     # Validate X11 layout if requested
     if [ "$check_x11" = "true" ]; then
         echo "Checking X11 layout (for GRUB ckbcomp)..."
-        # Extract base layout for X11 (e.g., "be-latin1" -> "be")
-        local base_layout="${layout%%-*}"
-        if validate_x11_layout_json "$base_layout" "$variant"; then
+        if validate_x11_layout_json "$x11_layout" "$x11_variant"; then
             x11_valid=1
         fi
         echo ""
@@ -132,32 +132,27 @@ validate_keyboard_layout() {
         echo "=================================="
         echo ""
         echo -e "${YELLOW}Recommendation:${NC}"
-        if [[ "$layout" == *"-"* ]]; then
-            local base="${layout%%-*}"
-            echo "Your layout '$layout' appears to be a console keymap name."
-            echo "For GRUB support, use the X11 format:"
-            echo "  KB_LAYOUT=\"$base\""
-            if jq -e ".\"$base\"" "$SYMBOLS_JSON" &>/dev/null; then
-                echo "  KB_VARIANT=\"\"  # Available variants:"
-                jq -r ".\"$base\"[]" "$SYMBOLS_JSON" | sed 's/^/    - /' | head -5
-            fi
-        fi
+        echo "Check your keyboard configuration in klartix.conf:"
+        echo "  VCONSOLE_KB=\"$console_keymap\""
+        echo "  KB_LAYOUT=\"$x11_layout\""
+        echo "  KB_VARIANT=\"$x11_variant\""
         return 1
     fi
 }
 
 # If script is run directly (not sourced), validate provided arguments
 if [ "${BASH_SOURCE[0]}" -ef "$0" ]; then
-    LAYOUT="${1:-}"
-    VARIANT="${2:-}"
+    CONSOLE_KEYMAP="${1:-}"
+    X11_LAYOUT="${2:-}"
+    X11_VARIANT="${3:-}"
 
-    if [ -z "$LAYOUT" ]; then
-        echo "Usage: $0 <layout> [variant]"
-        echo "Example: $0 be-latin1"
-        echo "Example: $0 be nodeadkeys"
+    if [ -z "$CONSOLE_KEYMAP" ] || [ -z "$X11_LAYOUT" ]; then
+        echo "Usage: $0 <console_keymap> <x11_layout> [x11_variant]"
+        echo "Example: $0 be-latin1 be"
+        echo "Example: $0 be-latin1 be nodeadkeys"
         exit 1
     fi
 
-    validate_keyboard_layout "$LAYOUT" "$VARIANT"
+    validate_keyboard_layout "$CONSOLE_KEYMAP" "$X11_LAYOUT" "$X11_VARIANT"
     exit $?
 fi

@@ -2,9 +2,9 @@
 
 > Assumes x86_64 UEFI. 
 
-Setups FDE with GRUB2 LUKS2 (PKBF2) on LVM or no-LVM. 
+Setups FDE with GRUB2 LUKS2 (PKBF2) on LVM. 
 
-And keymap support using [ckbcomp](https://archlinux.org/packages/ckbcomp).
+And ANY keymap support using [ckbcomp](https://archlinux.org/packages/ckbcomp).
 
 > No ISO needed works from any existing Linux installation.
 

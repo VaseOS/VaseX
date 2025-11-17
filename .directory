@@ -1,6 +1,6 @@
 [Desktop Entry]
 Icon=folder-log
-# th: f7d9791e3aea0417876215f6d39857b9
+# th: 6d0509be3eafa2137138182291a2a911
 
 ├── .github
 │   ├── hooks
@@ -26,14 +26,6 @@ Icon=folder-log
 │   │   ├── klartix.conf
 │   │   ├── klartix_lvm
 │   │   ├── klartix_plasma
-│   │   ├── klatrix_sound
-│   │   ├── symbols-202511.json
-│   │   └── validate_keymap.sh
-│   ├── klar_tix_nolvm
-│   │   ├── .directory
-│   │   ├── klartix.conf
-│   │   ├── klartix_desktop
-│   │   ├── klartix_luks
 │   │   ├── klatrix_sound
 │   │   ├── symbols-202511.json
 │   │   └── validate_keymap.sh
@@ -69,4 +61,4 @@ Icon=folder-log
 ├── upd_rm
 └── util_f
 
-16 directories, 51 files
+15 directories, 44 files

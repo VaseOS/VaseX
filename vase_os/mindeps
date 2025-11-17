@@ -44,34 +44,108 @@ else
     exit 0
 fi
 
-# Categories:
-# [BUILD] - ISO creation (iso_mod) 
-# [VM] - VM testing (has it's own dep check ./zazu_lago/setup_vms and env)
-# [INSTALL] - Installer runtime Host-2-Target installs (hade_box/install, altodeps)
-# [CORE] - Core system dependencies
+# ============================================================================
+# DEPENDENCY CATEGORIES & DETAILED DOCUMENTATION
+# ============================================================================
+#
+# [BUILD]   - ISO creation (iso_mod)
+# [INSTALL] - Klartix installer runtime (klar_tix_lvm, klar_tix_nolvm)
+# [VM]      - VM testing (has its own dep check: ./zazu_lago/setup_vms)
+# [CORE]    - Core system dependencies (usually pre-installed in base system)
 
-# Build-time Dependencies (ISO Creation)
-# ========================================
+# ============================================================================
+# BUILD DEPENDENCIES (ISO Creation)
+# ============================================================================
 # [BUILD] archiso                    - Base ISO building framework
-# [BUILD] pacman                     - Package manager (download/install)
-# [BUILD] repo-add                   - Create local package repositories
+# [BUILD] squashfs-tools             - ISO compression (mksquashfs via mkarchiso)
 # [BUILD] git                        - Version control, file filtering (ls-files)
-# [BUILD] gpg                        - ISO signing
+# [BUILD] gnupg                      - ISO signing, GPG key management
+# [BUILD] pacman                     - Package manager (download/install packages)
+# [BUILD] repo-add                   - Create local package repositories
 # [BUILD] tar                        - Archive creation for airootfs
 # [BUILD] sed, awk, grep             - Text processing for configs
-# [BUILD] squashfs-tools             - ISO compression (via mkarchiso)
-# [UTIL] jq                          - JSON parsing 
-# [UTIL] curl, wget                  - HTTP requests (GitHub API)
-# [UTIL] tree                        - Directory structure output (optional)
-# [UTIL] du, find, wc                - Disk/file statistics
-# [UTIL] date                        - Timestamps, timing
 
-# Core Dependencies (Always Required)
-# ========================================
+# ============================================================================
+# KLARTIX INSTALLER DEPENDENCIES (Host System Requirements)
+# ============================================================================
+# These packages must be installed on the HOST system running the installer
+#
+# [INSTALL] wget                     - Download artix-bootstrap.sh from Artix repo
+# [INSTALL] parted                   - Disk partitioning (GPT/UEFI)
+# [INSTALL] lvm2                     - LVM volume management (klar_tix_lvm)
+# [INSTALL] cryptsetup               - LUKS2 encryption setup
+# [INSTALL] git                      - Clone VaseX repo into target system
+#
+# Optional filesystem tools (based on TARGET_FS in klartix.conf):
+# [INSTALL] btrfs-progs              - For TARGET_FS="btrfs"
+# [INSTALL] xfsprogs                 - For TARGET_FS="xfs"
+# [INSTALL] f2fs-tools               - For TARGET_FS="f2fs"
+# [INSTALL] e2fsprogs                - For TARGET_FS="ext4" (usually pre-installed)
+#
+# Host tools used during installation (usually pre-installed):
+# [INSTALL] util-linux               - mount, umount, lsblk, wipefs, partprobe,
+#                                      blockdev, fuser, blkid, chroot
+# [INSTALL] device-mapper            - dmsetup (included with lvm2)
+# [INSTALL] coreutils                - cp, mv, mkdir, rm, chmod, chown, sync, sleep
+# [INSTALL] bash                     - Shell interpreter for install scripts
+
+# ============================================================================
+# TARGET SYSTEM DEPENDENCIES (Installed during Klartix setup)
+# ============================================================================
+# These are installed INTO the target system during the installation process
+# and do NOT need to be on the host system:
+#
+# Base system:
+# - Kernel: linux, linux-lts, linux-zen, or linux-hardened
+# - linux-firmware                   - Hardware firmware blobs
+# - base-devel                       - Development tools (gcc, make, etc.)
+# - grub                             - Bootloader
+# - efibootmgr                       - UEFI boot entry management
+# - mkinitcpio                       - Initial ramdisk generator
+# - sudo                             - Privilege escalation
+# - vim                              - Text editor
+# - git                              - Version control
+# - xkeyboard-config                 - Keyboard layout data for X11/GRUB
+#
+# Init-system specific (NetworkManager + crypto/LVM services):
+# - OpenRC: networkmanager-openrc, device-mapper-openrc, lvm2-openrc, cryptsetup-openrc
+# - Runit:  networkmanager-runit, device-mapper-runit, lvm2-runit, cryptsetup-runit
+# - S6:     networkmanager-s6, device-mapper-s6, lvm2-s6, cryptsetup-s6
+# - Dinit:  networkmanager-dinit, device-mapper-dinit, lvm2-dinit, cryptsetup-dinit
+#
+# Desktop environment (installed post-install via klartix_desktop/klartix_plasma):
+# - plasma or plasma-desktop         - KDE Plasma desktop
+# - wayland                          - Wayland display server
+# - sddm + sddm-runit/openrc/etc     - Display manager
+# - plasma-nm                        - NetworkManager integration for Plasma
+# - konsole, ark, dolphin            - KDE applications
+#
+# Audio (installed post-install via klatrix_sound):
+# - pipewire, pipewire-pulse         - Audio server
+# - pipewire-alsa, pipewire-jack     - Audio compatibility layers
+# - wireplumber                      - Pipewire session manager
+#
+# Hardware-specific (configured in klartix.conf, examples in scripts):
+# - CPU: intel-ucode or amd-ucode
+# - GPU: mesa, vulkan drivers, xf86-video-* drivers
+# - Audio firmware: sof-firmware, alsa-firmware
+# - VM: qemu-guest-agent, virtualbox-guest-utils
+
+# ============================================================================
+# UTILITY TOOLS (Optional but Recommended)
+# ============================================================================
+# [UTIL] jq                          - JSON parsing (keymap validation)
+# [UTIL] tree                        - Directory structure output (optional)
+# [UTIL] curl                        - HTTP requests (GitHub API, alternative to wget)
+
+# ============================================================================
+# CORE DEPENDENCIES (Pre-installed in Base System)
+# ============================================================================
 # [CORE] bash                        - Shell (all scripts)
-# [CORE] coreutils                   - cat, ls, cp, mv, rm, etc
+# [CORE] coreutils                   - cat, ls, cp, mv, rm, mkdir, chmod, sync, etc.
 # [CORE] findutils                   - find, xargs
 # [CORE] sed                         - Stream editor
-# [CORE] gawk                        - GNU awk
+# [CORE] gawk                        - GNU awk (text processing)
 # [CORE] grep                        - Pattern matching
-# [CORE] util-linux                  - Basic system utilities
+# [CORE] util-linux                  - mount, umount, lsblk, blkid, chroot, etc.
+# [CORE] tar                         - Archive extraction
