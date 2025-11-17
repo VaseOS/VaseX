@@ -125,7 +125,6 @@ cbanner "Klartix - Artix Linux Bootstrap Installer"
 nlp
 info "Final target configuration:"
 echo "  Hostname:     $TARGET_HOSTNAME"
-echo "  User:         $TARGET_USER"
 echo "  Timezone:     $TARGET_TIMEZONE"
 echo "  Console KB:   $VCONSOLE_KB"
 echo "  GRUB KB:      $KB_LAYOUT${KB_VARIANT:+ ($KB_VARIANT)}"
