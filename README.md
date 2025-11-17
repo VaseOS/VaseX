@@ -28,13 +28,26 @@ Using bash only and the official [ArtixBootstrap Tool](https://gitea.artixlinux.
 To edit it directly: `sudo./main -ekc`
 - Install base sys: `sudo ./main -k` 
 
+Runtime: 255.33s
+
 *On the target*
 
+Go to `cd VaseX`
 Set up plasma & drivers: `sudo ./main -kpe`  
 - Install: `sudo ./main -kde` *On the target*
+
+Runtime (Using Klagan mode 430.92 mb plasma install): about 150 seconds
+
+Useful if your sobmodules are out of sync
+```
+  # git submodule update --remote 
+  # or reclone everything fresh: rm -rf VaseX
+  # git clone --recurse-submodules <repo-url> 
+```
 
 ## LINKS:
 
 - https://wiki.artixlinux.org/Main/InstallationWithFullDiskEncryption
 - https://github.com/paulphys/artix-fde
 
+Useful if your submodules are out of sync

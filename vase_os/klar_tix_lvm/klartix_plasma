@@ -41,9 +41,7 @@ pacman -S --noconfirm --needed konsole ark dolphin
 # or full apps (heavy)
 #pacman -S kde-applications
 
-#echo "=== Installing Bluetooth support ==="
-#pacman -S --noconfirm bluez bluez-runit bluez-utils bluedevil
-# ln -sf /etc/runit/sv/bluetoothd /run/runit/service/
+################### HW
 
 # Hardware detection examples - uncomment and customize based on your system
 
@@ -66,9 +64,7 @@ pacman -S --noconfirm --needed konsole ark dolphin
 
 # pacman -S --noconfirm --needed ${HW_INTEL_OPENSOURCE}
 
-
 ################### NVIDIA GARBOYLE
-echo "=== Installing kernel headers ==="
 
 ## Edit me to the kernel you picked (eg. linux-zen-headers)
 #pacman -S --noconfirm --needed linux-headers
@@ -156,6 +152,9 @@ chmod +x /usr/share/sddm/scripts/Xsetup
 
 # Fix ownership of user config files
 chown -R "$SUDO_USER:$SUDO_USER" "/home/$SUDO_USER/.config"
+
+#echo "=== Installing Bluetooth support ==="
+#pacman -S --noconfirm bluez bluez-runit bluez-utils bluedevil
 
 echo "=== Installation complete! ==="
 
