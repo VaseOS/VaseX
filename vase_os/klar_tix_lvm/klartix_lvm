@@ -665,9 +665,15 @@ show_progress "Closing LVM and LUKS devices..."
 # Sync again before closing
 sync && sync && sync
 sleep 2
-# Ensure all device mapper devices are gone
+
+# Properly deactivate LVM volumes first
+vgchange -an lvmSystem 2>/dev/null || true
 sleep 2
-dmsetup remove_all --force 2>/dev/null || true
+
+# Close LUKS container
+cryptsetup close lvm-system 2>/dev/null || true
+sleep 2
+
 # Final cleanup to prevent host shutdown issues
 show_progress "Final device cleanup..."
 sync && sync && sync
