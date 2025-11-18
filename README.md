@@ -3,8 +3,9 @@
 >[!NOTE]
 > Made for my friend Klagan who likes Runit's fast boot time and more control, also lower bandwidth usageby only having necessary packages. After full setup for my needs on a laptop: **Packages:** 684 (pacman), 6 (flatpak)
 
-> Assumes x86_64 UEFI. Bit of weird project: No ISO needed works from any existing Linux installation.
-> Deps are listed `vase_os/mindeps` and in `klartix.conf`
+> Assumes x86_64 UEFI. Bit of weird project: No ISO needed works from any existing Linux installation. Altho I've mostly tested from Arch ISO since I'm more familiar with it. I guess it could build on any provided deps are there.
+
+> Deps are listed `vase_os/mindeps` and in `klartix.conf` for pkg man definitions.
 ```
 PKG_MAN="pacman"
 PKG_MAN_W="-S"
@@ -35,7 +36,7 @@ Using bash only and the official [ArtixBootstrap Tool](https://gitea.artixlinux.
 To edit it directly: `sudo./main -ekc`
 - Install base sys: `sudo ./main -k` 
 
-Runtime: 255.33s
+**Runtime:** 255.33s
 
 *On the target*
 
@@ -43,7 +44,7 @@ Go to `cd VaseX`
 Set up plasma & drivers: `sudo ./main -kpe`  
 - Install: `sudo ./main -kde` *On the target*
 
-Runtime (Using Klagan mode 430.92 mb plasma install, on disk total with drivers, browser, essentials 2.95 GiB on Ext4): about 150 seconds
+Using Klagan mode 430.92 mb plasma install, on disk total with drivers, browser, essentials 2.95 GiB on Ext4: about 150 seconds extra.
 
 Useful if your submodules are out of sync
 ```
